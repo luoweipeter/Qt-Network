@@ -66,6 +66,7 @@ typedef struct icmp_hdr{
 	unsigned short	Sequence;			//序列码
 }ICMP_HEADER;
 
+
 int FillArpHdr(u_char* packet, size_t len, u_short op, u_char* SRC_Mac, u_char* SRC_IP, u_char* DST_Mac, u_char* DST_IP);
 size_t BuildArPacket(u_char** packet, u_short op, u_char* SRC_Mac, u_char* SRC_IP, u_char* DST_Mac, u_char* DST_IP);
 #endif

@@ -23,14 +23,16 @@ SOURCES += main.cpp\
     CaptureThread.cpp \
     NetProtocol.c \
     IP_Range.cpp \
-    NetTools.c
+    NetTools.c \
+    NetProtocolTools.cpp
 
 HEADERS  += mainwindow.h \
     ArpScanThread.h \
     CaptureThread.h \
     NetProtocol.h \
     NetTools.h \
-    IP_Range.h
+    IP_Range.h \
+    NetProtocolTools.h
 
 FORMS    += mainwindow.ui
 

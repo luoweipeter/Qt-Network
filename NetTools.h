@@ -6,13 +6,12 @@
 #include <winsock2.h>
 #include <iphlpapi.h>
 #include <Windows.h>
-
+#include "NetProtocol.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 struct Raw_Mac{
-	unsigned char un[6];
+    unsigned char un[6];
 };
 
 int EndianConvert(void* _In_Un,size_t Size);
