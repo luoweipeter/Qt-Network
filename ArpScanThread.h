@@ -5,7 +5,8 @@
 #include "pcap.h"
 #include <QObject>
 #include <QThread>
-#include <IP_Range.h>
+#include "NetProtocolTools.h"
+#include "IP_Range.h"
 class ArpScanThread:public QThread
 {
     Q_OBJECT

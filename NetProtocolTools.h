@@ -40,8 +40,10 @@ public:
     Ether_Packet(int Size);
     /*Setter*/
     void SetEtherDestMac(QString Mac);
+    void SetEtherDestMac(const char* Mac);
     void SetEtherDestMac(Raw_Mac Mac);
     void SetEtherSrcMac(QString Mac);
+    void SetEtherSrcMac(const char* Mac);
     void SetEtherSrcMac(Raw_Mac Mac);
     void SetEtherType(unsigned short Type);
     /*Getter*/
@@ -63,11 +65,17 @@ public:
     Arp_Packet();
     /*Setter*/
     void SetArpDestMac(QString Mac);
+    void SetArpDestMac(const char* Mac);
     void SetArpDestMac(Raw_Mac Mac);
+
     void SetArpSrcMac(QString Mac);
+    void SetArpSrcMac(const char* Mac);
     void SetArpSrcMac(Raw_Mac Mac);
+
     void SetArpDestIP(QString IP);
+    void SetArpDestIP(const char* IP);
     void SetArpSrcIP(QString IP);
+    void SetArpSrcIP(const char* IP);
     void SetArpOperationCode(unsigned short Opcode);
     void SetArpHardwareType(unsigned short Type);
     void SetArpHardwareLength(unsigned char Length);

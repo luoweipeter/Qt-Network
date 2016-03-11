@@ -45,6 +45,7 @@ void ArpScanThread::run()
             return;
         }
 
+    Arp_Packet arp_send_packet=Arp_Packet();
     try{
         while(_IP_Range->HaveNext())
         {
