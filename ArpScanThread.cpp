@@ -79,14 +79,10 @@ void ArpScanThread::SetScanSrcMac(QString Mac)
     QByteArray mac_byte_data=Mac.toLocal8Bit();
     char* mac_cstr=mac_byte_data.data();
     _Src_Mac=CStrMacToRawMac(mac_cstr);
-    if(!IsValidMac(_Src_Mac))
+    if(IsValidMac(_Src_Mac)==false)
     {
         throw std::invalid_argument("please set a vaild mac");
     }
-//    if(_Src_Mac==NULL)
-//    {
-//        throw std::invalid_argument("Invalid argument~!!");
-//    }
 
 }
 
