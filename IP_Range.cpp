@@ -25,24 +25,30 @@ IP_Range::IP_Range(QString Begin_IP,QString End_IP,QString Mask)
     EndianConvert(&_Begin_IP,sizeof(unsigned long));
     EndianConvert(&_End_IP,sizeof(unsigned long));
 
-    if(_Begin_IP<_Net_Addr||_End_IP>_Broad_Addr||_Begin_IP>_End_IP)
+    if(_Begin_IP<=_Net_Addr||_End_IP>=_Broad_Addr||_Begin_IP>_End_IP)
     {
         throw IP_RangeException("Out of Range.");
     }
 
     _Index=0;
 
-    long len=1;
+    long max_len=1;
     for(int i=0;i<32;i++)
     {
         int chk=_Mask&(1<<i);
         if(chk==0)
         {
-            len=len<<1;
+            max_len=max_len<<1;
         }
     }
-    len -=2;
-    _Length=len;
+    max_len -=2;
+    _Max_Length=max_len;
+    _Length=_End_IP-_Begin_IP;
+
+    //当前地址指向起始地址的前一位,保证从_Begin_IP到_End_IP都取到
+    EndianConvert(&_Cur_IP,sizeof(unsigned long));
+    _Cur_IP--;
+    EndianConvert(&_Cur_IP,sizeof(unsigned long));
 
 }
 long IP_Range::Length(){
@@ -50,13 +56,13 @@ long IP_Range::Length(){
 
 }
 bool IP_Range::HaveNext(){
-    if(_Index<_Length)
+    if(_Index<=_Length)
         return true;
     return false;
 }
 unsigned long IP_Range::NextRawIP(){
     EndianConvert(&_Cur_IP,sizeof(unsigned long));
-    if(_Cur_IP<_Begin_IP ||_Cur_IP>_End_IP)
+    if(_Cur_IP<_Begin_IP-2 ||_Cur_IP>_End_IP)
     {
         return 0;
     }

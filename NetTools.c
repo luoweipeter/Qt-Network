@@ -1,20 +1,19 @@
 #include "NetTools.h"
 
-const char* RawMacToCStrMac(struct Raw_Mac* In_Raw_Mac)
+char* RawMacToCStrMac(struct Raw_Mac* In_Raw_Mac)
 {
 	char* ret = malloc(sizeof(unsigned char) * 18);
 	sprintf(ret, "%x-%x-%x-%x-%x-%x", In_Raw_Mac->un[0], In_Raw_Mac->un[1],
 										In_Raw_Mac->un[2], In_Raw_Mac->un[3],
 										In_Raw_Mac->un[4], In_Raw_Mac->un[5]);
 
-	return ret;
+    return ret;
 }
 
-struct Raw_Mac CStrMacToRawMac(const char* In_Str_Mac)
+struct Raw_Mac CStrMacToRawMac(char* In_Str_Mac)
 {
 	struct Raw_Mac ret;
 	memset(ret.un, '\0', 6);
-	int In_len=strlen(In_Str_Mac);
 	int ndelim = 0;
 	/*if (In_len < 16)
 		return;

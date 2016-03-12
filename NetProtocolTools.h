@@ -74,8 +74,12 @@ public:
 
     void SetArpDestIP(QString IP);
     void SetArpDestIP(const char* IP);
+    void SetArpDestIP(unsigned long IP);
+
     void SetArpSrcIP(QString IP);
     void SetArpSrcIP(const char* IP);
+    void SetArpSrcIP(unsigned long IP);
+
     void SetArpOperationCode(unsigned short Opcode);
     void SetArpHardwareType(unsigned short Type);
     void SetArpHardwareLength(unsigned char Length);
@@ -84,6 +88,7 @@ public:
     /*Getter*/
     QString GetArpDestMac();
     Raw_Mac GetRawArpDestMac();
+
     QString GetArpSrcMac();
     Raw_Mac GetRawArpSrcMac();
     QString GetArpDestIP();

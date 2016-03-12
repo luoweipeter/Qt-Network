@@ -17,8 +17,14 @@ public:
     {
         this->_IsStop=true;
     }
+    void SetDevName(QString Dev_Name)
+    {
+        this->_Dev_Name=Dev_Name;
+        this->_IsStop=false;
+    }
     void SetScanRange(QString Begin_IP,QString End_IP,QString Mask) throw();
     void SetScanSrcMac(QString Mac);
+    void SetScanIP(QString IP);
 signals:
   SendData(QByteArray Data);
   SendError(QString ErrorInfo);
@@ -28,6 +34,7 @@ private:
   IP_Range *_IP_Range;
   bool _IsStop;
   Raw_Mac _Src_Mac;
+  unsigned long _Src_IP;
   pcap_t* _Scan_fp;
   char* _Err_Buf;
   QString _Dev_Name;

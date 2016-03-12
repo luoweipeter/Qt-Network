@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,11 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     arp_capture=new CaptureThread;
     arp_capture->SetParseRule("arp and ether dst 00:26:C7:30:BD:F8");
-    arp_capture->SetMask("255.255.240.0");
+    arp_capture->SetMask("255.255.255.0");
     connect(arp_capture,SIGNAL(SendStatu(QString)),this,SLOT(on_SendStatu(QString)));
     connect(arp_capture,SIGNAL(SendError(QString)),this,SLOT(on_SendError(QString)));
     connect(arp_capture,SIGNAL(SendData(QByteArray)),this,SLOT(on_SendData(QByteArray)));
     arp_scan=new ArpScanThread;
+    connect(arp_scan,SIGNAL(SendError(QString)),this,SLOT(on_Scan_Error(QString)));
+    connect(arp_scan,SIGNAL(SendStatu(QString)),this,SLOT(on_Scan_Statu(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -86,6 +89,14 @@ void MainWindow::on_SendStatu(QString Info)
     stat->setText(Info);
 }
 
+ void MainWindow::on_Scan_Error(QString Error)
+ {
+    QMessageBox::information(0,"Error",Error);
+ }
+ void MainWindow::on_Scan_Statu(QString Statu)
+ {
+     qDebug()<<Statu;
+ }
 void MainWindow::on_BeginListen_Btn_clicked()
 {
     QString Combox_text;
@@ -108,7 +119,11 @@ void MainWindow::on_SelectDev_Btn_clicked()
 
 void MainWindow::on_Scan_Begin_Btn_clicked()
 {
+    QString Combox_text;
+    Combox_text=ui->comboBox->currentText();
     arp_scan->SetScanRange(ui->IP_Begin_Edt->text(),ui->IP_End_Edt->text(),ui->Mask_Edt->text());
-    arp_scan->SetScanSrcMac("00-26-C7-30-BD-F8");
+    arp_scan->SetScanSrcMac("C8-0A-A9-5B-99-40");
+    arp_scan->SetScanIP("192.168.3.13");
+    arp_scan->SetDevName(Combox_text);
     arp_scan->start();
 }

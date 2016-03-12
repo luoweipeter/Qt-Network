@@ -101,7 +101,7 @@ void Ether_Packet::SetEtherSrcMac(QString Mac)
            sizeof(char)*sizeof(Raw_Mac));
 
 }
-void Ether_Packet::SetEtherSrcMac(QString Mac)
+void Ether_Packet::SetEtherSrcMac(const char* Mac)
 {
     SetEtherSrcMac(QString(Mac));
 }
@@ -220,6 +220,10 @@ void Arp_Packet::SetArpSrcMac(Raw_Mac Mac)
  {
      SetArpDestIP(QString(IP));
  }
+ void Arp_Packet::SetArpDestIP(unsigned long IP)
+ {
+    memcpy(&(_Arp_Header->DestIp),&IP,sizeof(unsigned long));
+ }
 void Arp_Packet::SetArpSrcIP(QString IP)
  {
     QByteArray temp=IP.toLocal8Bit();
@@ -231,6 +235,10 @@ void Arp_Packet::SetArpSrcIP(QString IP)
 void Arp_Packet::SetArpSrcIP(const char* IP)
 {
     SetArpSrcIP(QString(IP));
+}
+void Arp_Packet::SetArpSrcIP(unsigned long IP)
+{
+    memcpy(&(_Arp_Header->SrcIp),&IP,sizeof(unsigned long));
 }
 void Arp_Packet::SetArpOperationCode(unsigned short Opcode)
 {

@@ -10,6 +10,7 @@ public:
     bool HaveNext();
     unsigned long NextRawIP();
 private:
+    long _Max_Length;
     long _Length;
     long _Index;
     unsigned long _Cur_IP;

@@ -30,7 +30,8 @@ private slots:
     void on_BeginListen_Btn_clicked();
     void on_SelectDev_Btn_clicked();
     void on_StopLinsten_Btn_clicked();
-
+    void on_Scan_Error(QString Error);
+    void on_Scan_Statu(QString Statu);
     void on_Scan_Begin_Btn_clicked();
 
 private:
