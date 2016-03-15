@@ -35,9 +35,10 @@ private:
   bool _IsStop;
   Raw_Mac _Src_Mac;
   unsigned long _Src_IP;
-  pcap_t* _Scan_fp;
+  pcap_t* _Scan_fp=NULL;
   char* _Err_Buf;
   QString _Dev_Name;
+  int _OpenPcap();
 };
 
 #endif // ARPSCANTHREAD_H

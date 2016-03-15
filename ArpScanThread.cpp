@@ -17,6 +17,10 @@ bool IsValidMac(Raw_Mac chkMac)
     }
     return false;
 }
+int ArpScanThread::_OpenPcap()
+{
+
+}
 void ArpScanThread::run()
 {
     char* dev_name;
@@ -35,17 +39,18 @@ void ArpScanThread::run()
             _Err_Buf              // 错误缓冲
             )) == NULL)
         {
-            emit SendError("\nUnable to open the adapter. %s is not supported by WinPcap.");
-            return;
+            emit SendError("Unable to open the adapter. %s is not supported by WinPcap.");
+            return ;
         }
 
-    Arp_Packet arp_send_packet=Arp_Packet();
+    Arp_Packet arp_send_packet;
     arp_send_packet.SetEtherDestMac("FF-FF-FF-FF-FF-FF");
     arp_send_packet.SetArpDestMac("FF-FF-FF-FF-FF-FF");
     arp_send_packet.SetEtherSrcMac(_Src_Mac);
     arp_send_packet.SetArpSrcMac(_Src_Mac);
     arp_send_packet.SetArpSrcIP(_Src_IP);
     arp_send_packet.SetArpOperationCode(0x01);
+
     try{
         while(_IP_Range->HaveNext())
         {

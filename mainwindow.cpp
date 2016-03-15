@@ -16,16 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     stat->setAlignment(Qt::AlignHCenter);
     ui->statusBar->setStyleSheet(QString("QStatusBar::item{border:0px}"));
     ui->statusBar->addWidget(stat);
+    _InitCapture();
+    _InitScan();
 
-    arp_capture=new CaptureThread;
-    arp_capture->SetParseRule("arp and ether dst 00:26:C7:30:BD:F8");
-    arp_capture->SetMask("255.255.255.0");
-    connect(arp_capture,SIGNAL(SendStatu(QString)),this,SLOT(on_SendStatu(QString)));
-    connect(arp_capture,SIGNAL(SendError(QString)),this,SLOT(on_SendError(QString)));
-    connect(arp_capture,SIGNAL(SendData(QByteArray)),this,SLOT(on_SendData(QByteArray)));
-    arp_scan=new ArpScanThread;
-    connect(arp_scan,SIGNAL(SendError(QString)),this,SLOT(on_Scan_Error(QString)));
-    connect(arp_scan,SIGNAL(SendStatu(QString)),this,SLOT(on_Scan_Statu(QString)));
+
 }
 
 MainWindow::~MainWindow()
@@ -34,6 +28,21 @@ MainWindow::~MainWindow()
     delete stat;
     arp_capture->quit();
     arp_capture->wait();
+}
+void MainWindow::_InitCapture()
+{
+    arp_capture=new CaptureThread;
+    arp_capture->SetParseRule("arp");
+    arp_capture->SetMask("255.255.240.0");
+    connect(arp_capture,SIGNAL(SendStatu(QString)),this,SLOT(on_SendStatu(QString)));
+    connect(arp_capture,SIGNAL(SendError(QString)),this,SLOT(on_SendError(QString)));
+    connect(arp_capture,SIGNAL(SendData(QByteArray)),this,SLOT(on_SendData(QByteArray)));
+}
+void MainWindow::_InitScan()
+{
+    arp_scan=new ArpScanThread;
+    connect(arp_scan,SIGNAL(SendError(QString)),this,SLOT(on_Scan_Error(QString)));
+    connect(arp_scan,SIGNAL(SendStatu(QString)),this,SLOT(on_Scan_Statu(QString)));
 }
 void MainWindow::FillSelect()
 {
@@ -82,7 +91,22 @@ void MainWindow::on_SendData(QByteArray Data)
 {
     QString Packet_len;
     Packet_len=QString::number(Data.length());
-    ui->listWidget->addItem("收到"+Packet_len+"字节~!");
+    //->listWidget->addItem("收到"+Packet_len+"字节~!");
+//    QString output;
+//    char* pdata=Data.data();
+//    for(int i=0;i<Data.length();i++)
+//        output+=QString().sprintf("%2x ",pdata[i]);
+//    qDebug()<<output;
+//    qDebug()<<"\n";
+    Arp_Packet arp_pack;
+    arp_pack.BuildFromRawData(Data.data(),Data.length());
+    unsigned short opcode=arp_pack.GetArpOperationCode();
+//    QString dest_mac=arp_pack.GetEtherDestMac();
+//    QString src_mac=arp_pack.GetEtherSrcMac();
+    QString dest_ip=arp_pack.GetArpDestIP();
+    QString src_ip=arp_pack.GetArpSrcIP();
+    ui->listWidget->addItem(QString::number(arp_pack.GetArpOperationCode())+"  "+src_ip+"发送 "+QString::number(Data.length())+"字节到 "+dest_ip);
+    //qDebug()<<src_mac<<" To "<<dest_mac;
 }
 void MainWindow::on_SendStatu(QString Info)
 {
@@ -95,7 +119,7 @@ void MainWindow::on_SendStatu(QString Info)
  }
  void MainWindow::on_Scan_Statu(QString Statu)
  {
-     qDebug()<<Statu;
+     //qDebug()<<Statu;
  }
 void MainWindow::on_BeginListen_Btn_clicked()
 {
@@ -122,8 +146,8 @@ void MainWindow::on_Scan_Begin_Btn_clicked()
     QString Combox_text;
     Combox_text=ui->comboBox->currentText();
     arp_scan->SetScanRange(ui->IP_Begin_Edt->text(),ui->IP_End_Edt->text(),ui->Mask_Edt->text());
-    arp_scan->SetScanSrcMac("C8-0A-A9-5B-99-40");
-    arp_scan->SetScanIP("192.168.3.13");
+    arp_scan->SetScanSrcMac("00-26-C7-30-BD-F8");
+    arp_scan->SetScanIP("10.10.9.123");
     arp_scan->SetDevName(Combox_text);
     arp_scan->start();
 }

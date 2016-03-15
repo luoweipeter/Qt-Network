@@ -5,6 +5,7 @@
 #include "pcap.h"
 #include <QThread>
 #include <QByteArray>
+#include <QBuffer>
 class CaptureThread:public QThread
 {
     Q_OBJECT

@@ -11,6 +11,7 @@
 #include "ArpScanThread.h"
 #include "CaptureThread.h"
 #include <QByteArray>
+#include "NetProtocolTools.h"
 namespace Ui {
 class MainWindow;
 }
@@ -35,6 +36,8 @@ private slots:
     void on_Scan_Begin_Btn_clicked();
 
 private:
+    void _InitCapture();
+    void _InitScan();
     CaptureThread *arp_capture;
     ArpScanThread *arp_scan;
     Ui::MainWindow *ui;

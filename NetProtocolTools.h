@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <QByteArray>
+#include <QVector>
+#include <QPair>
 #include <exception>
 #include <stdexcept>
 
@@ -15,21 +17,29 @@
 #define Arp_End_Pos Arp_Begin_Pos+sizeof(arp_hdr)
 
 #define DefaultPackSize 256
+
 class NetPacket
 {
 public:
     NetPacket();
     NetPacket(int Pack_Capacity);
+    NetPacket(const char* Data,int Size);
+    NetPacket(const NetPacket& Packet)=delete;
+    NetPacket& operator=(const NetPacket& rhs)=delete;
     int GetPacketSize();
     int GetPacketCapacity();
     const char* Dump() const;
-    /*virtual void BuildFromRawData(const char* Data);*/
+    virtual void BuildFromRawData(const char* Data,int Size);
+    //int JungePacketType();
     ~NetPacket();
 protected:
+    void ReginsterHeaderPoint(void* PHeader,int Hdr_offset);
     void ExpandCapacity(int New_Size);
-    void AppendData(int Size);
+    void AppendData(void* Phdr,int Size);
     char* Packet_Data;
 private:
+//    QVector< QPair<char**,int> > _RHPList;//RegisterHeaderPointList
+//    void _UpdataChildHeaderAddr();
     int _Capacity;
     int _FillSize;
 };
@@ -52,17 +62,18 @@ public:
     QString GetEtherSrcMac();
     Raw_Mac GetRawEtherSrcMac();
     unsigned short GetEtherType();
+    virtual void BuildFromRawData(const char* Data,int Size);
 private:
     int _Begin_Pos;
     int _End_Pos;
     ether_hdr* _Ether_Header;
-
 };
 
 class Arp_Packet:public Ether_Packet
 {
 public:
     Arp_Packet();
+    virtual void BuildFromRawData(const char* Data,int Size);
     /*Setter*/
     void SetArpDestMac(QString Mac);
     void SetArpDestMac(const char* Mac);

@@ -12,6 +12,7 @@ TARGET = TestWincap
 TEMPLATE = app
 
 QMAKE_CFLAGS += -std=gnu11  -D_GNU_SOURCE
+QMAKE_CXXFLAGS += -std=gnu++11
 
 LIBS += -L$$PWD/WinPcap/Lib/ -lpacket -lwpcap
 

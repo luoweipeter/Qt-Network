@@ -17,6 +17,49 @@ NetPacket::NetPacket(int Pack_Capacity)
     memset(Packet_Data,0,_Capacity);
     _FillSize=0;
 }
+NetPacket::NetPacket(const char* Data,int Size)
+{
+    BuildFromRawData(Data,Size);
+}
+//NetPacket::NetPacket(const NetPacket& rhs)
+//{
+//    if(Packet_Data!=NULL)
+//    {
+//        delete[] Packet_Data;
+//    }
+//    Packet_Data=new char[rhs._Capacity];
+//    memcpy
+//}
+
+void NetPacket::BuildFromRawData(const char* Data,int Size)
+{
+    if(Packet_Data!=NULL)
+    {
+        delete[] Packet_Data;
+    }
+    Packet_Data=new char[Size];
+    memcpy(Packet_Data,Data,Size*sizeof(char));
+    _FillSize=Size;
+    _Capacity=Size;
+    //_UpdataChildHeaderAddr();
+}
+
+//void NetPacket::ReginsterHeaderPoint(void* PHeader,int Hdr_offset)
+//{
+//    QPair<char**,int> tmp;
+//    tmp.first=(char**)PHeader;
+//    tmp.second=Hdr_offset;
+//    _RHPList.push_back(tmp);
+//}
+//void NetPacket::_UpdataChildHeaderAddr()
+//{
+//    QPair<char**,int> cur;
+//    for(int i=0;i<_RHPList.size();i++)
+//    {
+//        cur=_RHPList[i];
+//        *(cur.first)==Packet_Data+cur.second;
+//    }
+//}
 int NetPacket::GetPacketSize()
 {
     return _FillSize;
@@ -45,14 +88,19 @@ void NetPacket::ExpandCapacity(int New_Size)
     delete[] Packet_Data;
     Packet_Data=temp;
 }
-void NetPacket::AppendData(int Size)
+void NetPacket::AppendData(void* PHeader,int Size)
 {
     if(_FillSize+Size>_Capacity)
     {
         throw std::invalid_argument("capacity is too small,you should expand first!");
     }
+    //ReginsterHeaderPoint(PHeader,_FillSize);
     _FillSize+=Size;
+
+
 }
+
+
 /*Base class NetPacket End*/
 /*class Ether_Packet Begin*/
 Ether_Packet::Ether_Packet()
@@ -60,7 +108,7 @@ Ether_Packet::Ether_Packet()
     assert(GetPacketSize()==0);
     _Begin_Pos=GetPacketSize();
     _End_Pos=_Begin_Pos+sizeof(ether_hdr);
-    AppendData(sizeof(ether_hdr));
+    AppendData(&_Ether_Header,sizeof(ether_hdr));
     _Ether_Header=(ether_hdr*)Packet_Data;
 
 }
@@ -68,7 +116,14 @@ Ether_Packet::Ether_Packet(int Size):NetPacket(Size)
 {
     _Begin_Pos=Ether_Begin_Pos;
     _End_Pos=Ether_End_Pos;
-    AppendData(sizeof(ether_hdr));
+    AppendData(&_Ether_Header,sizeof(ether_hdr));
+    _Ether_Header=(ether_hdr*)Packet_Data;
+
+}
+
+void Ether_Packet::BuildFromRawData(const char* Data,int Size)
+{
+    NetPacket::BuildFromRawData(Data,Size);
     _Ether_Header=(ether_hdr*)Packet_Data;
 }
 void Ether_Packet::SetEtherDestMac(QString Mac)
@@ -157,7 +212,7 @@ Arp_Packet::Arp_Packet()
     assert(GetPacketSize()==(sizeof(ether_hdr)));
     _Begin_Pos=GetPacketSize();
     _End_Pos=_Begin_Pos+sizeof(arp_hdr);
-    AppendData(sizeof(arp_hdr));
+    AppendData(&_Arp_Header,sizeof(arp_hdr));
     _Arp_Header=(arp_hdr*)(Packet_Data+_Begin_Pos);
     SetEtherType(0x0806);
     SetEtherDestMac("FF-FF-FF-FF-FF-FF");
@@ -167,6 +222,12 @@ Arp_Packet::Arp_Packet()
     SetArpHardwareLength(0x06);
     SetArpProtocolType(0x0800);
     SetArpProtocolLength(0x04);
+
+}
+void Arp_Packet::BuildFromRawData(const char* Data,int Size)
+{
+     Ether_Packet::BuildFromRawData(Data,Size);
+    _Arp_Header=(arp_hdr*)(Packet_Data+_Begin_Pos);
 
 }
 void Arp_Packet::SetArpDestMac(QString Mac)
